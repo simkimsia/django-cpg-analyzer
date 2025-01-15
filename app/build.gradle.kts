@@ -5,39 +5,64 @@
  * For more details on building Java & JVM projects, please refer to https://docs.gradle.org/8.12/userguide/building_java_projects.html in the Gradle documentation.
  */
 
-plugins {
-    // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
-    alias(libs.plugins.kotlin.jvm)
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+}
 
-    // Apply the application plugin to add support for building a CLI application in Java.
+plugins {
+    // Update to use newer kotlin plugin syntax
+    kotlin("jvm") version "1.9.20"
     application
 }
 
 repositories {
-    // Use Maven Central for resolving dependencies.
     mavenCentral()
+    // Add CPG's repository
+    maven {
+        url = uri("https://github.com/Fraunhofer-AISEC/cpg/raw/master/maven-repository")
+    }
+    // Add Eclipse CDT repository
+    maven {
+        url = uri("https://repo.eclipse.org/content/groups/releases/")
+    }
+    // Add Eclipse Platform repository
+    maven {
+        url = uri("https://download.eclipse.org/tools/cdt/releases/10.7/")
+    }
+    // Add additional Eclipse repositories
+    maven {
+        url = uri("https://download.eclipse.org/releases/2022-12/")
+    }
+    maven {
+        url = uri("https://download.eclipse.org/tools/orbit/downloads/drops/R20221123021534/repository")
+    }
 }
 
 dependencies {
-    // Use JUnit Jupiter for testing.
-    testImplementation(libs.junit.jupiter)
+    // CPG dependencies
+    implementation("de.fraunhofer.aisec:cpg-core:9.0.2")
+    implementation("de.fraunhofer.aisec:cpg-language-python:9.0.2")
+    implementation("de.fraunhofer.aisec:cpg-analysis:9.0.2")
 
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // Add logging dependencies
+    implementation("org.slf4j:slf4j-api:1.7.32")
+    implementation("org.slf4j:slf4j-simple:1.7.32")
 
-    // This dependency is used by the application.
-    implementation(libs.guava)
+    testImplementation(kotlin("test"))
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(11)
+        languageVersion.set(JavaLanguageVersion.of(11))
     }
 }
 
 application {
-    // Define the main class for the application.
-    mainClass = "org.example.AppKt"
+    // Update mainClass to match your actual package structure
+    mainClass.set("com.example.MainKt")
 }
 
 tasks.named<Test>("test") {
