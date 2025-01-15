@@ -56,13 +56,18 @@ dependencies {
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
 application {
     // Update mainClass to match your actual package structure
     mainClass.set("com.example.MainKt")
+}
+
+// Configure Python path
+tasks.withType<JavaExec> {
+    environment("PYTHONPATH", "/opt/homebrew/lib/python3.9/site-packages")
 }
 
 tasks.named<Test>("test") {
